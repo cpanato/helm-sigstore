@@ -66,7 +66,7 @@ golangci-lint:
 lint: golangci-lint ## Runs golangci-lint linter
 	$(GOLANGCI_LINT) run  -n
 
-test:
+test: ## Runs go tests
 	go test ./...
 
 ##################
@@ -74,12 +74,12 @@ test:
 ##################
 
 .PHONY: release
-release:
+release: ## Runs goreleaser in release mode
 	LDFLAGS="$(LDFLAGS)" goreleaser release
 
 # used when need to validate the goreleaser
 .PHONY: snapshot
-snapshot:
+snapshot: ## Runs goreleaser in snapshot mode
 	LDFLAGS="$(LDFLAGS)" goreleaser release --skip-sign --skip-publish --snapshot --rm-dist
 
 clean:

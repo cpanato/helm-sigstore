@@ -10,20 +10,16 @@ before:
   hooks:
   - go mod tidy
 
-gomod:
-  proxy: true
-
-source:
-  enabled: true
+# gomod:
+#   proxy: true
 
 builds:
-- id: helm-sigstore
-  binary: helm-sigstore-{{ .Os }}-{{ .Arch }}
+- binary: helm-sigstore-{{ .Os }}-{{ .Arch }}
   no_unique_dist_dir: true
   main: .
   flags:
   - -trimpath
-  mod_timestamp: '{{ .CommitTimestamp }}'
+  mod_timestamp: "{{ .CommitTimestamp }}"
   goos:
   - linux
   - windows
@@ -35,7 +31,7 @@ builds:
   - s390x
   - ppc64le
   goarm:
-  - '7'
+  - "7"
   ignore:
   - goos: windows
     goarch: arm64
@@ -52,18 +48,32 @@ builds:
 
 signs:
   # Keyless
-- id: cosign-keyless
+- id: helm-sigstore-keyless
   signature: "${artifact}.sig"
-  certificate: '${artifact}.pem'
+  certificate: "${artifact}.pem"
   env:
   - COSIGN_EXPERIMENTAL=1
   cmd: cosign
   args:
     - sign-blob
-    - '--output-certificate=${certificate}'
-    - '--output-signature=${signature}'
-    - '${artifact}'
-  artifacts: all
+    - "--output-certificate=${certificate}"
+    - "--output-signature=${signature}"
+    - "${artifact}"
+  artifacts: binary
+  output: true
+  # Keyless
+- id: checksum-keyless
+  signature: "${artifact}.sig"
+  certificate: "${artifact}.pem"
+  env:
+  - COSIGN_EXPERIMENTAL=1
+  cmd: cosign
+  args:
+    - sign-blob
+    - "--output-certificate=${certificate}"
+    - "--output-signature=${signature}"
+    - "${artifact}"
+  artifacts: checksum
   output: true
 
 archives:
@@ -73,11 +83,9 @@ archives:
 
 sboms:
 - artifacts: binary
-- id: source # Two different sbom configurations need two different IDs
-  artifacts: source
 
 checksum:
-  name_template: 'checksums.txt'
+  name_template: "checksums.txt"
 
 snapshot:
   name_template: SNAPSHOT-{{ .ShortCommit }}
