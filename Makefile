@@ -75,7 +75,7 @@ test: ## Runs go tests
 
 .PHONY: release
 release: ## Runs goreleaser in release mode
-	LDFLAGS="$(LDFLAGS)" goreleaser release
+	LDFLAGS="$(LDFLAGS)" goreleaser release --rm-dist
 
 # used when need to validate the goreleaser
 .PHONY: snapshot

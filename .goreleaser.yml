@@ -61,20 +61,6 @@ signs:
     - "${artifact}"
   artifacts: binary
   output: true
-  # Keyless
-- id: checksum-keyless
-  signature: "${artifact}.sig"
-  certificate: "${artifact}.pem"
-  env:
-  - COSIGN_EXPERIMENTAL=1
-  cmd: cosign
-  args:
-    - sign-blob
-    - "--output-certificate=${certificate}"
-    - "--output-signature=${signature}"
-    - "${artifact}"
-  artifacts: checksum
-  output: true
 
 archives:
 - format: binary
